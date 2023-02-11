@@ -1,7 +1,6 @@
 import { Fragment, useCallback } from "react"; 
-import {format} from 'date-fns';
+import { utcToZonedTime, format } from "date-fns-tz";
 
-const formatTime = (time : number) => format(time * 1000, 'hh:mm aaa');
 
 export interface Weather { 
 	wind_speed: number; 
@@ -18,10 +17,11 @@ export interface Weather {
 
 interface WeatherCardProps {
 	weather?: Weather;
+	timeZone?: string;
 	isCelsius: boolean;
 }
 
-export default function WeatherCard({weather, isCelsius = true} : WeatherCardProps) : JSX.Element {
+export default function WeatherCard({weather, timeZone, isCelsius = true} : WeatherCardProps) : JSX.Element {
 
 	const temp = useCallback((t : number) => {
 		if (isCelsius) {
@@ -32,6 +32,12 @@ export default function WeatherCard({weather, isCelsius = true} : WeatherCardPro
 		}
 
 	}, [isCelsius]);
+
+	const formatTime = useCallback((time : number) => {
+		if (!timeZone) return '';
+		const zonedTime = utcToZonedTime(time * 1000, timeZone);
+		return format(zonedTime, 'hh:mm aaa', {timeZone});
+	}, [timeZone]);
 
 	return (
 		<div className='grid grid-cols-2 p-2 rounded gap-5 bg-[#F2F3F8] shadow'>

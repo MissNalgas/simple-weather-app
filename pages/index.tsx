@@ -4,9 +4,12 @@ import CitySelector, { City } from "@/components/atoms/citySelector";
 import WeatherCard, { Weather } from "@/components/atoms/weatherCard";
 import Toggle from 'react-toggle';
 import Image from 'next/image';
-import { format } from 'date-fns';
+import { format, utcToZonedTime } from 'date-fns-tz';
 
-const formatCurrentDate = (date : number) => format(date, 'MMMM do, u - hh:mm a');
+const formatCurrentDate = (date : number, timeZone: string) => {
+	const zonedDate = utcToZonedTime(date, timeZone);
+	return format(zonedDate, 'MMMM do, u - hh:mm a', {timeZone});
+}
 
 export default function Home() {
 	
@@ -15,6 +18,7 @@ export default function Home() {
 	const [isCelsius, setIsCelsius] = useState(true);
 	const [city, setCity] = useState<City>();
 	const [time, setTime] = useState(Date.now());
+	const [timezone, setTimezone] = useState('');
 
 	const lookupWeather = async (city : City) => {
 		try {
@@ -29,6 +33,7 @@ export default function Home() {
 
 			setWeather(response.data.weather);
 			setTime(Date.now());
+			setTimezone(response.data.timezone);
 
 		} finally {
 			setIsLoading(false);
@@ -54,13 +59,13 @@ export default function Home() {
 				<p>loading...</p>
 			) : (
 				<Fragment>
-					{time && city && (
+					{time && city && timezone && (
 						<div className='flex flex-col item-center m-4'>
 							<h2 className='font-bold text-center text-lg'>{city?.name}</h2>
-							<h3 className='text-center'>{formatCurrentDate(time)}</h3>
+							<h3 className='text-center'>{formatCurrentDate(time, timezone)}</h3>
 						</div>
 					)}
-					<WeatherCard isCelsius={isCelsius} weather={weather}/>
+					<WeatherCard timeZone={timezone} isCelsius={isCelsius} weather={weather}/>
 				</Fragment>
 			)}
 		</div>

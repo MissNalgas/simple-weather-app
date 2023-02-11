@@ -13,8 +13,14 @@ export default async function handler(
 				'X-Api-Key': API_KEY
 			}
 		});
+		const responseTime = await fetch(`https://api.api-ninjas.com/v1/worldtime?lat=${lat}&lon=${lon}`, {
+			headers: {
+				'X-Api-Key': API_KEY
+			}
+		});
+		const timeJson : any = await responseTime.json();
 		const weather = await response.json();
-		res.send({weather});
+		res.send({weather, timezone: timeJson?.timezone});
 	} catch(_err) {
 		res.status(404).send({error: 'City not found'});
 	}
