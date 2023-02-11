@@ -31,7 +31,7 @@ export default function CitySelector({onChange} : CitySelectorProps) : JSX.Eleme
 				placeholder='Search a city...'
 				styles={{control: (base) => ({...base, width: 250})}} 
 				instanceId='city-selector' 
-				onChange={({value}) => onChange(value)} 
+				onChange={(option) => !!option?.value && onChange(option.value)} 
 				loadOptions={loadOptions}
 			/>
 		</div>
