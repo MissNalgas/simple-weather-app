@@ -47,13 +47,14 @@ export default function Home() {
 			<h1 className='font-bold text-2xl m-4'>Simple weather app</h1>
 			<CitySelector onChange={city => lookupWeather(city)}/>
 			<div className='flex items-center gap-2 m-4'>
-				<span className={!isCelsius ? 'font-semibold' : 'text-gray-400'}>Fahrenheit</span>
+				<span data-test-id='fahrenheit' className={!isCelsius ? 'font-semibold' : 'text-gray-400'}>Fahrenheit</span>
 				<Toggle 
+					data-testid='celsius-toggle'
 					checked={isCelsius} 
 					onChange={() => setIsCelsius(s => !s)}
 					icons={false}
 				/>
-				<span className={isCelsius ? 'font-semibold' : 'text-gray-400'}>Celsius</span>
+				<span data-test-id='celsius' className={isCelsius ? 'font-semibold' : 'text-gray-400'}>Celsius</span>
 			</div>
 			{isLoading ? (
 				<p>loading...</p>
@@ -61,7 +62,7 @@ export default function Home() {
 				<Fragment>
 					{time && city && timezone && (
 						<div className='flex flex-col item-center m-4'>
-							<h2 className='font-bold text-center text-lg'>{city?.name}</h2>
+							<h2 data-test-id='city-name' className='font-bold text-center text-lg'>{city?.name}</h2>
 							<h3 className='text-center'>{formatCurrentDate(time, timezone)}</h3>
 						</div>
 					)}
